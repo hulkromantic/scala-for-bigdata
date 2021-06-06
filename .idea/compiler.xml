@@ -8,10 +8,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="flink" />
         <module name="spark" />
+        <module name="kafka" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="kafka" target="8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
