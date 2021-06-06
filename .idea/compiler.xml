@@ -10,5 +10,8 @@
         <module name="spark" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="kafka" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
