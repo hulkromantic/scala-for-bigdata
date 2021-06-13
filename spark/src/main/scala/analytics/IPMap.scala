@@ -1,9 +1,10 @@
-import java.sql.{Connection, DriverManager, PreparedStatement}
+package analytics
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
+import java.sql.{Connection, DriverManager, PreparedStatement}
 
 object IPMap {
   def main(args: Array[String]): Unit = {
@@ -12,7 +13,7 @@ object IPMap {
     val sc = new SparkContext(conf)
     sc.setLogLevel("WARN")
     //2.加载ip规则文件
-    val ipFile: RDD[String] = sc.textFile("D:\\data\\ip.txt")
+    val ipFile: RDD[String] = sc.textFile("/Users/lh/ip.txt")
     //3.获取ip起始范围(2)、结束范围(3)、城市信息(4,5,6,7,8)、经度(13)、维度(14)
     val lineArr: RDD[Array[String]] = ipFile.map(_.split("\\|"))
     //RDD[(ip起始值, ip结束值, 城市信息, 经度, 维度)]
@@ -22,7 +23,7 @@ object IPMap {
     //注意:ipRules后续会被各个Task使用多次,为了避免多次传输,可以把它广播到各个Executor
     val ipRulesBroadcast: Broadcast[Array[(String, String, String, String, String)]] = sc.broadcast(ipRules)
     //4.加载日志文件
-    val logFile: RDD[String] = sc.textFile("D:\\data\\20190121000132.394251.http.format")
+    val logFile: RDD[String] = sc.textFile("/Users/lh/20190121000132.394251.http.format")
     //5.将日志的ip分割出来
     val ipRDD: RDD[String] = logFile.map(_.split("\\|")).map(_ (1))
     //6.将ip转为数字,并使用二分查找去ipRules中查找出相应的城市信息,记为((城市,经度,纬度),1)

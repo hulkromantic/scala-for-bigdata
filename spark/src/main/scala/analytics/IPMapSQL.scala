@@ -1,4 +1,5 @@
-import java.sql.{Connection, DriverManager, PreparedStatement}
+package analytics
+
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
