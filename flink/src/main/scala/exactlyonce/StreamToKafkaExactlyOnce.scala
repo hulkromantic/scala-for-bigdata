@@ -25,7 +25,7 @@ import org.apache.flink.streaming.connectors.kafka.internals.KeyedSerializationS
  * •Semantic.EXACTLY_ONCE
  */
 
-object StreamToKafka {
+object StreamToKafkaExactlyOnce {
   def main(args: Array[String]): Unit = {
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
 
@@ -53,7 +53,7 @@ object StreamToKafka {
     val myProducer = new FlinkKafkaProducer[String](topic, new KeyedSerializationSchemaWrapper[String](new SimpleStringSchema()), prop,
       FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
     text.addSink(myProducer)
-    env.execute("StreamToKafka")
+    env.execute("StreamToKafkaExactlyOnce")
   }
 
 }

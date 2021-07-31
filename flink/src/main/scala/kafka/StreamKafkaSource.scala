@@ -5,11 +5,11 @@ import java.util.Properties
 import org.apache.commons.collections.map.HashedMap
 import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.connector.kafka.source.KafkaSource
-import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import org.apache.flink.streaming.connectors.kafka.internals.KafkaTopicPartition
 
-object StreamingKafkaSource {
+object StreamKafkaSource {
 
   def main(args: Array[String]): Unit = {
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
@@ -66,9 +66,9 @@ object StreamingKafkaSource {
     myConsumer.setStartFromGroupOffsets()
 
     //添加消费源
-    val text = env.addSource(myConsumer)
+    val text: DataStream[String] = env.addSource(myConsumer)
     text.print()
-    env.execute("StreamingKafkaSource")
+    env.execute("StreamKafkaSource")
   }
 
 }

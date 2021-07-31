@@ -30,6 +30,8 @@ object ScalaTest {
       x(13).toString, x(14).toString, x(15).toString, x(16).toString, x(17).toString, x(18).toString, x(19).toString, x(20).toString,
       x(21).toString, x(22).toString, x(23).toString, x(24).toString, x(25).toString, x(26).toString, x(27).toString, x(28).toString,
       x(29).toString, x(30).toString, x(31).toString, x(32).toString, x(33).toString, x(34).toString))
+    val partitions = lineRDD.getNumPartitions
+    println(partitions)
     import sparkSession.implicits._
     val VipDF: DataFrame = VipRDD.toDF()
     //VipDF.show()
