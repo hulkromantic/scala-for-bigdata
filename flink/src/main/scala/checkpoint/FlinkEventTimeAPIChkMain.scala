@@ -1,0 +1,5 @@
+package checkpoint
+
+object FlinkEventTimeAPIChkMain {
+
+}

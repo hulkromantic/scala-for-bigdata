@@ -1,0 +1,5 @@
+package exactlyonce
+
+object KafkaToMySQLExactlyOnce {
+
+}
