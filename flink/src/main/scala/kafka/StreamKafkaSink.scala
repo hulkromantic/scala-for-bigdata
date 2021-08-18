@@ -27,14 +27,14 @@ object StreamKafkaSink {
 
   def main(args: Array[String]): Unit = {
     //1.创建流执行环境
-    val env = StreamExecutionEnvironment.getExecutionEnvironment
+    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     //2.准备数据
     val dataStream: DataStream[Student] = env.fromElements(
-      Student(8, "xiaoming", "beijing biejing", "female")
+      Student(8, "xiaoming", "beijing beijing", "female")
     )
 
     //将student转换成字符串
-    val studentStream: DataStream[String] = dataStream.map(student =>
+    val studentStream: DataStream[String] = dataStream.map((student: Student) =>
       toJsonString(student) // 这里需要显示SerializerFeature中的某一个，否则会报同时匹配两个方法的错误
     )
 

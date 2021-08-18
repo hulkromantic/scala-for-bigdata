@@ -5,7 +5,6 @@ import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.{TypeHint, TypeInformation}
 import org.apache.flink.api.java.tuple.Tuple
 import org.apache.flink.configuration.Configuration
-import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.util.Collector
@@ -28,10 +27,10 @@ object TestKeyedState {
       } else {
         (0L, 0L)
       }
-      println("currentSum:"+currentSum)
+      println("currentSum:" + currentSum)
       // 更新
       val newSum: (Long, Long) = (currentSum._1 + 1, currentSum._2 + input._2)
-      println("newSum:"+newSum)
+      println("newSum:" + newSum)
       // 更新状态值
       sum.update(newSum)
       // 如果count >=3 清空状态值，重新计算

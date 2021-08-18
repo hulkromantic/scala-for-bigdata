@@ -16,7 +16,7 @@ object TopN4 {
 
     //3.处理数据
     //RDD[(学科, 老师)]
-    val subjectAndTeacher: RDD[(String, String)] = logfile.map(url => {
+    val subjectAndTeacher: RDD[(String, String)] = logfile.map((url: String) => {
       val strs: Array[String] = url.split("[/]")
       val subject:String =strs(2).split("[.]")(0)
       val teacher:String =strs(3)
@@ -29,7 +29,7 @@ object TopN4 {
     val subjectAndTeacherDF: DataFrame = subjectAndTeacher.toDF("subject","teacher")
     subjectAndTeacherDF.createOrReplaceTempView("t_teacher")
 
-    val sql =
+    val sql: String =
       """
         |select subject,teacher,count(*) counts
         |from t_teacher
@@ -56,7 +56,7 @@ object TopN4 {
      */
 
     //6.对上面的临时表,按学科组内排序,可以使用我们之前学习的row_number() over()开窗函数
-    val sql2 =
+    val sql2: String =
       """
         |select subject,teacher,counts, row_number() over(partition by subject order by counts desc) rank
         |from temp

@@ -14,16 +14,16 @@ object TopN1 {
     //2.加载数据
     val logfile: RDD[String] = sc.textFile("D:\\data\\teache.log")
     //3.处理数据
-    val teacherAndOne: RDD[(String, Int)] = logfile.map(url => {
+    val teacherAndOne: RDD[(String, Int)] = logfile.map((url: String) => {
       val index: Int = url.lastIndexOf("/")
       val teacher: String = url.substring(index + 1)
       (teacher, 1)
     })
 
     //4.聚合
-    val teacherAndCount: RDD[(String, Int)] = teacherAndOne.reduceByKey(_ + _)
+    val teacherAndCount: RDD[(String, Int)] = teacherAndOne.reduceByKey((_: Int) + (_: Int))
     //5.排序
-    val result: RDD[(String, Int)] = teacherAndCount.sortBy(_._2, false)
+    val result: RDD[(String, Int)] = teacherAndCount.sortBy((_: (String, Int))._2, false)
     result.collect().foreach(println)
 
     /*

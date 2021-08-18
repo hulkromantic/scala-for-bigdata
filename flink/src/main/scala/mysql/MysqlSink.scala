@@ -13,7 +13,7 @@ object MysqlSink {
 
   def main(args: Array[String]): Unit = {
     //1.创建流执行环境
-    val env = StreamExecutionEnvironment.getExecutionEnvironment
+    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     //2.准备数据
     val dataStream: DataStream[Student] = env.fromElements(
       Student(8, "xiaoming", "beijing biejing", "female")

@@ -36,6 +36,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <scala.version>2.12</scala.version>
         <spark.version>2.4.0</spark.version>
+        <hadoop.version>2.6.0-cdh5.7.0</hadoop.version>
+        <hbase.version>1.2.0-cdh5.7.0</hbase.version>
     </properties>
 
     <dependencies>
@@ -79,6 +81,29 @@
             <artifactId>spark-streaming-kafka-0-10_${scala.version}</artifactId>
             <version>${spark.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

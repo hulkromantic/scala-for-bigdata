@@ -21,7 +21,7 @@ object StreamDataToRedis {
 
     //注意：必须要添加这一行隐式转行，否则下面的flatmap方法执行会报错
     import org.apache.flink.api.scala._
-    val l_wordsData: DataStream[(String, String)] = text.map(line => ("words_scala", line))
+    val l_wordsData: DataStream[(String, String)] = text.map((line: String) => ("words_scala", line))
     val conf: FlinkJedisPoolConfig = new FlinkJedisPoolConfig.Builder().setHost("node01").setPort(6379).build()
     val redisSink = new RedisSink[Tuple2[String, String]](conf, new MyRedisMapper)
     l_wordsData.addSink(redisSink)

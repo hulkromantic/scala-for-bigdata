@@ -1,6 +1,7 @@
 package window
 
 import org.apache.commons.lang3.time.FastDateFormat
+import org.apache.flink.api.common.eventtime.WatermarkStrategy
 import org.apache.flink.api.java.tuple.Tuple
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
@@ -11,6 +12,7 @@ import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindo
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
+
 import scala.collection.mutable.ArrayBuffer
 
 /**

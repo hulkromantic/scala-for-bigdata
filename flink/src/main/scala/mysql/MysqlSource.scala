@@ -1,6 +1,6 @@
 package mysql
 
-import java.sql.{Connection, DriverManager, PreparedStatement}
+import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.api.scala._
 import org.apache.flink.configuration.Configuration
@@ -9,7 +9,7 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceCont
 
 object MysqlSource {
   def main(args: Array[String]): Unit = {
-    val env = StreamExecutionEnvironment.getExecutionEnvironment
+    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     val source: DataStream[Student] = env.addSource(new SQL_source)
     source.print()
     env.execute()
@@ -40,13 +40,13 @@ object MysqlSource {
     }
 
     override def run(sourceContext: SourceContext[Student]): Unit = {
-      val queryRequest = ps.executeQuery()
+      val queryRequest: ResultSet = ps.executeQuery()
       while (queryRequest.next()) {
-        val stuid = queryRequest.getInt("id")
-        val stuname = queryRequest.getString("name")
-        val stuaddr = queryRequest.getString("addr")
-        val stusex = queryRequest.getString("sex")
-        val stu = new Student(stuid, stuname, stuaddr, stusex)
+        val stuId: Int = queryRequest.getInt("id")
+        val stuName: String = queryRequest.getString("name")
+        val stuAddr: String = queryRequest.getString("addr")
+        val stuSex: String = queryRequest.getString("sex")
+        val stu = new Student(stuId, stuName, stuAddr, stuSex)
         sourceContext.collect(stu)
       }
     }
@@ -54,9 +54,9 @@ object MysqlSource {
     override def cancel(): Unit = {}
   }
 
-  case class Student(stuid: Int, stuname: String, stuaddr: String, stusex: String) {
+  case class Student(stuId: Int, stuName: String, stuAddr: String, stuSex: String) {
     override def toString: String = {
-      "stuid:" + stuid + "  stuname:" + stuname + "   stuaddr:" + stuaddr + "   stusex:" + stusex
+      "stuId:" + stuId + "  stuName:" + stuName + "   stuAddr:" + stuAddr + "   stuSex:" + stuSex
     }
   }
 

@@ -50,8 +50,8 @@ object KafkaToMySQLExactlyOnce {
     //可以保证checkpoint是成功的、通过偏移量提交成功
     //kafkaConsumer.setCommitOffsetsOnCheckpoints(true)
     val lines: DataStream[String] = env.addSource(kafkaConsumer)
-    val words: DataStream[String] = lines.flatMap(_.split(" "))
-    val wordAndOne: DataStream[(String, Int)] = words.map((_, 1))
+    val words: DataStream[String] = lines.flatMap((_: String).split(" "))
+    val wordAndOne: DataStream[(String, Int)] = words.map(((_: String), 1))
     val reduced: DataStream[(String, Int)] = wordAndOne.keyBy(0).sum(1)
     reduced.addSink(new MySqlExactlyOnceSink)
     env.execute()
@@ -66,6 +66,7 @@ object KafkaToMySQLExactlyOnce {
 
     override def invoke(transaction: MySqlConnectionState, value: (String, Int), context: SinkFunction.Context): Unit = {
       val connection: Connection = transaction.connection
+      //val connection: Connection = DriverManager.getConnection("")
       println("=====> invoke... " + connection)
       val pstm: PreparedStatement = connection.prepareStatement("INSERT INTO t_wordcount (word, counts) VALUES (?, ?) ON DUPLICATE KEY UPDATE counts = ?")
       pstm.setString(1, value._1)
@@ -76,7 +77,7 @@ object KafkaToMySQLExactlyOnce {
     }
 
     override def preCommit(transaction: MySqlConnectionState): Unit = {
-      //transaction.connection
+      transaction.connection
     }
 
     override def commit(transaction: MySqlConnectionState): Unit = {
@@ -88,9 +89,11 @@ object KafkaToMySQLExactlyOnce {
       transaction.connection.rollback()
       transaction.connection.close()
     }
+
   }
 
   class MySqlConnectionState(@transient val connection: Connection) {
+
   }
 
 }

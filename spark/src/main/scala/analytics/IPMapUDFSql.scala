@@ -14,7 +14,7 @@ object IPMapUDFSql {
     //2.加载ip规则文件
     val ipFile: RDD[String] = sc.textFile("/Users/lh/ip.txt")
     //3.获取ip起始范围(2)、结束范围(3)、城市信息(4,5,6,7,8)、经度(13)、维度(14)
-    val lineArr: RDD[Array[String]] = ipFile.map(_.split("\\|"))
+    val lineArr: RDD[Array[String]] = ipFile.map((_: String).split("\\|"))
     //RDD[(ip起始值, ip结束值, 城市信息, 经度, 维度)]
     val ipRuleRDD: RDD[(String, String, String, String, String)] = lineArr.map(x => (x(2), x(3), x(4) + "" + x(5) +
       "" + x(6) + "" + x(7) + "" + x(8), x(13), x(14)))
@@ -25,7 +25,7 @@ object IPMapUDFSql {
     //5.加载日志文件
     val logFile: RDD[String] = sc.textFile("/Users/lh/20190121000132.394251.http.format")
     //6.获取日志中的ip并转为数字最后再将RDD转换成DF
-    val ipDF: DataFrame = logFile.map(_.split("\\|")).map(arr => IPUtils.ipToLong(arr(1))).toDF("ipNum")
+    val ipDF: DataFrame = logFile.map(_.split("\\|")).map((arr: Array[String]) => IPUtils.ipToLong(arr(1))).toDF("ipNum")
     //ipDF.show(10)
     /*
     +----------+

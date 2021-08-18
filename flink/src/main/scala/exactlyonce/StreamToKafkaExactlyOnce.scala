@@ -50,8 +50,7 @@ object StreamToKafkaExactlyOnce {
     //使用至少一次语义的形式
     //val myProducer = new FlinkKafkaProducer011<>(brokerList, topic, new SimpleStringSchema());
     //使用支持仅一次语义的形式
-    val myProducer = new FlinkKafkaProducer[String](topic, new KeyedSerializationSchemaWrapper[String](new SimpleStringSchema()), prop,
-      FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+    val myProducer = new FlinkKafkaProducer[String](topic, new KeyedSerializationSchemaWrapper[String](new SimpleStringSchema()), prop, FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
     text.addSink(myProducer)
     env.execute("StreamToKafkaExactlyOnce")
   }

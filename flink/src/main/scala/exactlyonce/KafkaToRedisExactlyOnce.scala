@@ -11,6 +11,7 @@ import org.apache.flink.streaming.connectors.redis.RedisSink
 import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig
 import org.apache.flink.streaming.connectors.redis.common.mapper.{RedisCommand, RedisCommandDescription, RedisMapper}
 
+
 object KafkaToRedisExactlyOnce {
   def main(args: Array[String]): Unit = {
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
@@ -49,8 +50,8 @@ object KafkaToRedisExactlyOnce {
     //可以保证checkpoint是成功的、通过偏移量提交成功
     kafkaConsumer.setCommitOffsetsOnCheckpoints(true)
     val lines: DataStream[String] = env.addSource(kafkaConsumer)
-    val words: DataStream[String] = lines.flatMap(_.split(" "))
-    val wordAndOne: DataStream[(String, Int)] = words.map((_, 1))
+    val words: DataStream[String] = lines.flatMap((_: String).split(" "))
+    val wordAndOne: DataStream[(String, Int)] = words.map(((_: String), 1))
     val reduced: DataStream[(String, Int)] = wordAndOne.keyBy(0).sum(1)
     val conf: FlinkJedisPoolConfig = new FlinkJedisPoolConfig.Builder().setHost("node01").setPassword("123456").build()
 
@@ -62,7 +63,7 @@ object KafkaToRedisExactlyOnce {
 
   class RedisWordCountMapper extends RedisMapper[(String, Int)] {
     override def getCommandDescription: RedisCommandDescription = {
-      new RedisCommandDescription(RedisCommand.HSET, "DOIT-Word-Count")
+      new RedisCommandDescription(RedisCommand.HSET, "Do-It-Word-Count")
     }
 
     override def getKeyFromData(data: (String, Int)): String = data._1

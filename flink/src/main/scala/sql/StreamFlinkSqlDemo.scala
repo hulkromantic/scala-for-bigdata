@@ -14,7 +14,6 @@ import org.apache.flink.streaming.api.watermark.Watermark
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.types.Row
 import org.apache.flink.table.api.bridge.scala.{StreamTableEnvironment, tableConversions}
-
 import scala.util.Random
 
 /**

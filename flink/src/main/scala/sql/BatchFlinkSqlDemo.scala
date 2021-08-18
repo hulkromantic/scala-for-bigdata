@@ -1,11 +1,11 @@
 package sql
 
 import org.apache.flink.api.scala.ExecutionEnvironment
-import org.apache.flink.table.api.Table
+import org.apache.flink.table.api.{Table, TableEnvironment}
 import org.apache.flink.api.scala._
-import org.apache.flink.table.api.bridge.scala.BatchTableEnvironment
-import org.apache.flink.table.api.bridge.scala.StreamTableEnvironment
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.types.Row
+import org.apache.flink.table.api.bridge.scala.{BatchTableEnvironment, StreamTableEnvironment}
 
 /**
  * 使用Flink SQL统计用户消费订单的总金额、最大金额、最小金额、订单总数。
@@ -29,13 +29,13 @@ object BatchFlinkSqlDemo {
      */
 
     //1. 获取一个批处理运行环境
-    val env: ExecutionEnvironment = ExecutionEnvironment.getExecutionEnvironment
-
-
+    //val env: ExecutionEnvironment = ExecutionEnvironment.getExecutionEnvironment
+    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     //2. 获取一个Table运行环境
-    val tableEnv: BatchTableEnvironment = BatchTableEnvironment.create(env)
+    //val tableEnv: BatchTableEnvironment = BatchTableEnvironment.create(env)
+    val tableEnv: StreamTableEnvironment = StreamTableEnvironment.create(env)
     //4. 基于本地 Order 集合创建一个DataSet source
-    val orderDataSet: DataSet[Order] = env.fromElements(
+    val orderDataSet: DataStream[Order] = env.fromElements(
       Order(1, "zhangsan", "2018-10-20 15:30", 358.5),
       Order(2, "zhangsan", "2018-10-20 16:30", 131.5),
       Order(3, "lisi", "2018-10-20 16:30", 127.5),
@@ -48,8 +48,9 @@ object BatchFlinkSqlDemo {
     )
 
     //5. 使用Table运行环境将DataSet注册为一张表
-    tableEnv.registerDataSet("t_order", orderDataSet)
-
+    //tableEnv.registerDataSet("t_order", orderDataSet)
+    val t_order: Table = tableEnv.fromDataStream(orderDataSet)
+    tableEnv.createTemporaryView("t_order", t_order)
     //6. 使用SQL语句来操作数据（统计用户消费订单的总金额、最大金额、最小金额、订单总数）
     //用户消费订单的总金额、最大金额、最小金额、订单总数。
     val sql: String =
@@ -66,7 +67,12 @@ object BatchFlinkSqlDemo {
 
     //7. 使用TableEnv.toDataSet将Table转换为DataSet
     val table: Table = tableEnv.sqlQuery(sql)
-    table.printSchema()
-    tableEnv.toDataSet[Row](table).print()
+    val resultStream: DataStream[Row] = tableEnv.toChangelogStream(table)
+    resultStream.print()
+    env.execute("BatchFlinkSqlDemo")
+    //table.printSchema()
+    //println(table)
+    //tableEnv.toDataStream(table).print()
+    //tableEnv.toDataStream[Row](table).print()
   }
 }

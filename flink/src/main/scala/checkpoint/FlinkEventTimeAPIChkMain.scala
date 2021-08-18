@@ -53,7 +53,7 @@ object FlinkEventTimeAPIChkMain {
    */
   def main(args: Array[String]): Unit = {
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStateBackend(new FsStateBackend("hdfs://hadoop01:9000/flink-checkpoint/checkpoint/"))
+    env.setStateBackend(new FsStateBackend("file:///Users/lh/flink-checkpoint/checkpoint/"))
     env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE)
     env.getCheckpointConfig.setCheckpointInterval(6000)
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
@@ -114,7 +114,6 @@ object FlinkEventTimeAPIChkMain {
       val udfState: UDFState = state.get(0)
       total = udfState.getState
     }
-
 
     // 制作自定义状态快照
     override def snapshotState(checkpointId: Long, timestamp: Long): util.List[UDFState] = {

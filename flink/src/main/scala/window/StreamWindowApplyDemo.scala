@@ -35,13 +35,13 @@ object StreamWindowApplyDemo {
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
 
     //2. 构建socket流数据源，并指定IP地址和端口号
-    val textDataStream: DataStream[String] = env.socketTextStream("node01", 9999).flatMap(_.split(" "))
+    val textDataStream: DataStream[String] = env.socketTextStream("node01", 9999).flatMap((_: String).split(" "))
 
     //3. 对接收到的数据转换成单词元组
-    val wordDataStream: DataStream[(String, Int)] = textDataStream.map(_->1)
+    val wordDataStream: DataStream[(String, Int)] = textDataStream.map((_: String) -> 1)
 
     //4. 使用 keyBy 进行分流（分组）
-    val groupedDataStream: KeyedStream[(String, Int), String] = wordDataStream.keyBy(_._1)
+    val groupedDataStream: KeyedStream[(String, Int), String] = wordDataStream.keyBy((_: (String, Int))._1)
 
     //5. 使用 timeWinodw 指定窗口的长度（每3秒计算一次）
     val windowDataStream: WindowedStream[(String, Int), String, TimeWindow] = groupedDataStream.timeWindow(Time.seconds(3))

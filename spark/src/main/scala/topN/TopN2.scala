@@ -15,7 +15,7 @@ object TopN2 {
 
     //3.处理数据
     //RDD[((学科, 老师), 1)]
-    val subjectAndTeacherAndOne: RDD[((String, String), Int)] = logfile.map(url => {
+    val subjectAndTeacherAndOne: RDD[((String, String), Int)] = logfile.map((url: String) => {
       val strs: Array[String] = url.split("[/]")
       val subject: String = strs(2).split("[.]")(0)
       val teacher: String = strs(3)
@@ -25,11 +25,11 @@ object TopN2 {
     //4.根据key(学科, 老师),进行聚合
     //RDD[((学科, 老师), 次数)]
     //[((bigdata, tom), 2),((bigdata, andy), 3)...]
-    val subjectAndTeacherAndCount: RDD[((String, String), Int)] = subjectAndTeacherAndOne.reduceByKey(_ + _)
+    val subjectAndTeacherAndCount: RDD[((String, String), Int)] = subjectAndTeacherAndOne.reduceByKey((_: Int) + (_: Int))
 
     //5.根据学科进行分组
     //RDD[(bigdata, [((bigdata, tom), 2),((bigdata, andy), 3)...]....)]
-    val groupBySubjectRDD: RDD[(String, Iterable[((String, String), Int)])] = subjectAndTeacherAndCount.groupBy(_._1._1)
+    val groupBySubjectRDD: RDD[(String, Iterable[((String, String), Int)])] = subjectAndTeacherAndCount.groupBy((_: ((String, String), Int))._1._1)
 
     //6.组内排序
     //RDD[(学科, List[(老师, 次数)])]
@@ -38,7 +38,7 @@ object TopN2 {
     //map(t=>(t._1._2,t._2)):t表示((String, String), Int)),t._1._2表示String即老师,t._2表示Int即次数
     val groupBySubjectSortByCountRDD: RDD[(String, List[(String, Int)])] =
       groupBySubjectRDD.mapValues(
-        _.toList.sortBy(_._2).reverse.map(t => (t._1._2, t._2)))
+        (_: Iterable[((String, String), Int)]).toList.sortBy((_: ((String, String), Int))._2).reverse.map((t: ((String, String), Int)) => (t._1._2, t._2)))
 
     //7.收集结果
     groupBySubjectSortByCountRDD.collect().foreach(println)

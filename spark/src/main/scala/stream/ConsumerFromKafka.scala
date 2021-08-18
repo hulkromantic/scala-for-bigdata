@@ -14,13 +14,13 @@ object ConsumerFromKafka {
   def main(args: Array[String]): Unit = {
     //1.创建StreamingContext
     //spark.master should be set as local[n], n > 1
-    val sparkConf = new SparkConf().setAppName("consumer").setMaster("local[*]")
+    val sparkConf: SparkConf = new SparkConf().setAppName("consumer").setMaster("local[*]")
     val sparkContext = new SparkContext(sparkConf)
     sparkContext.setLogLevel("WARN")
     val streamingContext = new StreamingContext(sparkContext, Seconds(5)) //5表示5秒中对数据进行切分形成一个RDD
 
     //准备连接Kafka的参数
-    val kafkaParams = Map[String, Object](
+    val kafkaParams: Map[String, Object] = Map[String, Object](
       "bootstrap.servers" -> "node01:9092,node02:9092,node03:9092",
       "key.deserializer" -> classOf[StringDeserializer],
       "value.deserializer" -> classOf[StringDeserializer],
@@ -34,7 +34,7 @@ object ConsumerFromKafka {
       "enable.auto.commit" -> (false: java.lang.Boolean)
     )
 
-    val topics = Array("spark_kafka")
+    val topics: Array[String] = Array("spark_kafka")
 
     //2.使用KafkaUtil连接Kafak获取数据
     val recordDStream: InputDStream[ConsumerRecord[String, String]] = KafkaUtils.createDirectStream[String, String](streamingContext,
@@ -47,7 +47,6 @@ object ConsumerFromKafka {
     val wordAndOneDStream: DStream[(String, Int)] = wordDStream.map((_, 1))
     val result: DStream[(String, Int)] = wordAndOneDStream.reduceByKey(_ + _)
     result.print()
-
     streamingContext.start() //开启
     streamingContext.awaitTermination() //等待优雅停止
   }
